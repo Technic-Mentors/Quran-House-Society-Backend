@@ -8,6 +8,6 @@ app.use(cors())
 
 import apiEndpoints from "./endPoints/apis.js"
 app.use("/api", apiEndpoints)
-app.listen(8000, () => {
-    console.log("your app listing at http://localhost:8000");
+app.listen(8001, () => {
+    console.log("your app listing at http://localhost:8001");
 })

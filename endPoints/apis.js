@@ -20,7 +20,7 @@ const upload = multer({ storage });
 
 // admin 
 const createAdmin = async () => {
-    const adminEmail = "quranhousesociety@gmail.com";
+    const adminEmail = "usman@mk.com.pk";
     const adminPassword = "1234"
     const checkEmail = await Admin.findOne({ email: adminEmail })
     if (checkEmail) {
@@ -47,6 +47,27 @@ router.post("/adminLogin", async (req, res) => {
             return res.status(400).json({ message: "Invalid Credentials" })
         }
         res.json(checkAdmin)
+    } catch (error) {
+        console.log(error);
+        res.status(500).send("internal server error occured")
+    }
+})
+router.put("/updateAdminPass", async (req, res) => {
+    try {
+        const { email, oldPassword, newPassword } = req.body
+        const admin = await Admin.findOne({ email })
+        if (!admin) {
+            return res.status(400).json({ message: "Invalid Admin Email" })
+        }
+        const checkPassword = await bcrypt.compare(oldPassword, admin.password)
+        if (!checkPassword) {
+            return res.status(400).json({ message: "Invalid Old Password" })
+        }
+
+        const hashNewPassword = await bcrypt.hash(newPassword, 10)
+        admin.password = hashNewPassword
+        await admin.save()
+        res.json({ message: "Password updated successfully" });
     } catch (error) {
         console.log(error);
         res.status(500).send("internal server error occured")
